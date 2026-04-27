@@ -68,6 +68,16 @@ async function downloadChunkPack(url = "/download-chunk-pack") {
   console.log("[Noizu] Chunk pack cached:", index.length);
 }
 
+function renderPatch(patch, ctx) {
+  fetch(`/patch/${patch.id}`)
+    .then(r => r.blob())
+    .then(blob => createImageBitmap(blob))
+    .then(img => {
+      ctx.drawImage(img, patch.x, patch.y);
+    });
+}
+
+
 // ----------------------------
 // SIMPLE ZIP READER (JSZip)
 // ----------------------------
