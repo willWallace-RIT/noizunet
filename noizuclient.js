@@ -39,6 +39,16 @@ async function saveChunk(id, blob) {
   return tx.complete;
 }
 
+function renderHybrid(data, ctx) {
+  // 1. fast pass
+  data.encoding.forEach(c => {
+    if (c.type === "ref") drawChunk(c, ctx);
+  });
+
+  // 2. patch pass
+  data.patches.forEach(p => renderPatch(p, ctx));
+}
+
 // ----------------------------
 // LOAD CHUNK
 // ----------------------------
