@@ -36,15 +36,54 @@ def mse(a, b):
 def similarity(a, b):
     return 1.0 - np.mean((a - b) ** 2)
 
+def update_stats(top_k):
+    best, best_sim = top_k[0]
+
+    best["use_count"] += 1
+    best["match_score"] += best_sim
+
+    for entry, sim in top_k:
+        entry["nearby_score"] += sim
+        entry["avg_similarity"] = (
+            entry["avg_similarity"] * 0.9 + sim * 0.1
+        )
+
+    return best
+
 def top_k_matches(chunk, k=5):
     scored = []
 
     for entry in CHUNK_DATASET:
         sim = similarity(chunk, entry["image"])
         scored.append((entry, sim))
+        entry.update({
+    "use_count": 0,
+    "match_score": 0.0,
+    "nearby_score": 0.0,
+    "avg_similarity": 0.0
+})
 
     scored.sort(key=lambda x: x[1], reverse=True)
     return scored[:k]
+
+def compute_rank(e):
+    return (
+        e["use_count"] +
+        e["match_score"] * 2 +
+        e["nearby_score"] * 0.5 +
+        e["avg_similarity"] * 3
+    )
+
+def encode_chunk(chunk):
+    top_k = top_k_matches(chunk)
+
+    best = update_stats(top_k)
+    best_sim = top_k[0][1]
+
+    if best_sim > 0.85:
+        return {"type": "ref", "id": best["id"]}
+    else:
+        return {"type": "raw"}
 
 
 def chunk_image(img):
@@ -58,6 +97,16 @@ def chunk_image(img):
             chunks.append((x, y, chunk))
 
     return chunks
+
+def save_dataset():
+    with open("chunks.json", "w") as f:
+        json.dump(CHUNK_DATASET, f)
+
+
+
+def load_dataset():
+    global CHUNK_DATASET
+    CHUNK_DATASET = json.load(open("chunks.json"))
 
 def encode_chunk_to_base64(img):
     buffer = io.BytesIO()
@@ -93,6 +142,16 @@ def estimate_sizes(chunks, encoding):
     return raw_size, encoding_size
 
 
+def assign_tier(e):
+    r = compute_rank(e)
+
+    if r > 1000:
+        return 0
+    elif r > 200:
+        return 1
+    else:
+        return 2
+
 def build_chunk_pack():
     temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".zip")
     zip_path = temp_file.name
@@ -119,6 +178,13 @@ def build_chunk_pack():
     return zip_path
 
 
+@app.get("/chunks")
+def get_chunks(top: int = 50):
+    return sorted(
+        CHUNK_DATASET,
+        key=lambda x: compute_rank(x),
+        reverse=True
+    )[:top]
 
 @app.get("/download-chunk-pack")
 def download_chunk_pack():
