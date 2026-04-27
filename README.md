@@ -2,6 +2,8 @@
 noizunet project
 (boilerplate by chatgpt)
 
+current:added untestedccode for scoring and subnitting chuncks as well as partial integration to leverage speed with efficiency and precision
+
 
 🌀 Noizu Compression — Client Loader & Cache System
 
