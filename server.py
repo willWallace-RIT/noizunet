@@ -2,6 +2,8 @@ import os
 import io
 import json
 import base64
+import zipfile
+import tempfile
 import numpy as np
 from PIL import Image
 from fastapi import FastAPI, UploadFile, File
