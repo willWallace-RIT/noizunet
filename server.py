@@ -6,6 +6,10 @@ import zipfile
 import tempfile
 import numpy as np
 from PIL import Image
+import faiss
+import numpy as np
+
+
 from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import JSONResponse, StreamingResponse
 from fastapi.responses import FileResponse
@@ -50,6 +54,26 @@ def update_stats(top_k):
 
     return best
 
+
+def faiss_search(chunk, k=10):
+    vec = embed(chunk).reshape(1, -1)
+
+    distances, indices = index.search(vec, k)
+
+    results = []
+    for i, dist in zip(indices[0], distances[0]):
+        results.append((CHUNK_DATASET[i], 1 / (1 + dist)))
+    return results
+
+
+
+
+
+
+def embed(chunk):
+    # simple baseline (replace later with CNN/CLIP)
+    return chunk.flatten().astype("float32")
+
 def top_k_matches(chunk, k=5):
     scored = []
 
@@ -62,6 +86,7 @@ def top_k_matches(chunk, k=5):
     "nearby_score": 0.0,
     "avg_similarity": 0.0
 })
+        entry["embedding"] = embed(entry["image"])
 
     scored.sort(key=lambda x: x[1], reverse=True)
     return scored[:k]
@@ -207,12 +232,17 @@ async def process_image(file: UploadFile = File(...)):
 
     encoding = []
     matched_count = 0
+dim = CHUNK_DATASET[0]["embedding"].shape[0]
 
+index = faiss.IndexFlatL2(dim)
+
+vectors = np.array([e["embedding"] for e in CHUNK_DATASET])
+index.add(vectors)
     for x, y, chunk in chunks:
         chunk_np = np.array(chunk)
 
         match, score = find_best_match(chunk_np)
-
+		top_k = faiss_search(chunk)
         if match:
             encoding.append({
                 "type": "ref",
