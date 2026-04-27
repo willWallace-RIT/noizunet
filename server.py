@@ -66,6 +66,15 @@ def faiss_search(chunk, k=10):
     return results
 
 
+def detect_missing_regions(top_k, threshold=0.7):
+    missing = []
+
+    for entry, sim in top_k:
+        if sim < threshold:
+            missing.append(entry)
+
+    return missing
+
 
 
 
@@ -224,6 +233,19 @@ def download_chunk_pack():
 # ----------------------------
 # ROUTES
 # ----------------------------
+
+@app.get("/patch/{patch_id}")
+def get_patch(patch_id: str):
+    patch = load_patch(patch_id)
+
+    return FileResponse(
+        patch["path"],
+        media_type="image/webp"
+    )
+
+
+
+
 @app.post("/process-image")
 async def process_image(file: UploadFile = File(...)):
     img = Image.open(file.file).convert("RGB")
@@ -274,16 +296,18 @@ index.add(vectors)
     # RESPONSE
     # ----------------------------
     if mode == "noizu":
-        return JSONResponse({
-            "mode": "noizu",
-            "encoding": encoding,
-            "stats": {
-                "matched_chunks": matched_count,
-                "total_chunks": len(chunks),
-                "raw_size_est": raw_size,
-                "encoding_size_est": encoding_size
-            }
-        })
+        
+return {
+    "mode": "hybrid",
+    "encoding": [
+        {"type": "ref", "id": "chunk_001"},
+        {"type": "ref", "id": "chunk_042"},
+        {"type": "missing", "patch_id": "p12"}
+    ],
+    "patches": [
+        {"id": "p12", "url": "/patch/p12"}
+    ]
+}
 
     else:
         buffer = io.BytesIO()
