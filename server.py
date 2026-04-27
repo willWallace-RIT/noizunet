@@ -8,7 +8,7 @@ import numpy as np
 from PIL import Image
 from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import JSONResponse, StreamingResponse
-
+from fastapi.responses import FileResponse
 app = FastAPI()
 
 # ----------------------------
@@ -103,6 +103,19 @@ def build_chunk_pack():
         z.writestr("index.json", json.dumps(index, indent=2))
 
     return zip_path
+
+
+
+@app.get("/download-chunk-pack")
+def download_chunk_pack():
+    zip_path = build_chunk_pack()
+
+    return FileResponse(
+        zip_path,
+        media_type="application/zip",
+        filename="noizunet_pack.zip"
+    )
+
 # ----------------------------
 # ROUTES
 # ----------------------------
