@@ -36,6 +36,17 @@ def mse(a, b):
 def similarity(a, b):
     return 1.0 - np.mean((a - b) ** 2)
 
+def top_k_matches(chunk, k=5):
+    scored = []
+
+    for entry in CHUNK_DATASET:
+        sim = similarity(chunk, entry["image"])
+        scored.append((entry, sim))
+
+    scored.sort(key=lambda x: x[1], reverse=True)
+    return scored[:k]
+
+
 def chunk_image(img):
     w, h = img.size
     cw, ch = CHUNK_SIZE
