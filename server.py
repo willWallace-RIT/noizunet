@@ -33,6 +33,9 @@ else:
 def mse(a, b):
     return np.mean((a.astype("float32") - b.astype("float32")) ** 2)
 
+def similarity(a, b):
+    return 1.0 - np.mean((a - b) ** 2)
+
 def chunk_image(img):
     w, h = img.size
     cw, ch = CHUNK_SIZE
