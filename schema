@@ -1,0 +1,7 @@
+CHUNK_DATASET = [
+    {
+        "id": "chunk_001",
+        "image": np.array(...),
+        "path": "...",
+    }
+]
