@@ -78,6 +78,31 @@ def estimate_sizes(chunks, encoding):
     encoding_size = len(json.dumps(encoding))
     return raw_size, encoding_size
 
+
+def build_chunk_pack():
+    temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".zip")
+    zip_path = temp_file.name
+
+    with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as z:
+
+        index = []
+
+        for entry in CHUNK_DATASET:
+            chunk_path = entry["path"]
+            chunk_id = entry["id"]
+
+            arcname = f"chunks/{chunk_id}.png"
+            z.write(chunk_path, arcname)
+
+            index.append({
+                "id": chunk_id,
+                "path": arcname
+            })
+
+        # Write index.json
+        z.writestr("index.json", json.dumps(index, indent=2))
+
+    return zip_path
 # ----------------------------
 # ROUTES
 # ----------------------------
@@ -119,6 +144,9 @@ async def process_image(file: UploadFile = File(...)):
     else:
         mode = "image"
 
+
+
+    
     # ----------------------------
     # RESPONSE
     # ----------------------------
