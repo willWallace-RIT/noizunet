@@ -2,8 +2,11 @@
 noizunet project
 (boilerplate by chatgpt)
 
-In the noizunet project (image chunking and noise project) the idea is to reduce chunks of image data to a pair of an int and a float. 
+In the noizunet project (image chunking and noise project) the idea is to reduce chunks of image data to a pair of an int and a float. (or one or two floats with noise scaling)
 
+processing currently is designed for "monkeys on a typewriter" processing
+but if one os to record treaded territory as they process brute force with machine assessing bitmap characteristics
+rocessing should get more efficient with an evolution in to batch assessment of best case within server instance separated subsets of saved noise subsets.
 
 current:added untestedccode for scoring and subnitting chuncks as well as partial integration to leverage speed with efficiency and precision
 
