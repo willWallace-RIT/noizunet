@@ -12,6 +12,8 @@ rocessing should get more efficient with an evolution in to batch assessment of 
 current:added untestedccode for scoring and subnitting chuncks as well as partial integration to leverage speed with efficiency and precision
 
 
+noiunet is utilizing noizu compression
+https://github.com/willWallace-RIT/noizu_compression
 🌀 Noizu Compression — Client Loader & Cache System
 
 NoizuNet introduces a chunk-based image reconstruction pipeline where images are transmitted as references to known visual primitives instead of raw pixels.
