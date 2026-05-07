@@ -9,7 +9,12 @@ instead of focusing on novel or complex compression, the algorithm design approc
 
 so the information transferred back and for desired image chunks noise algo used, seed value and scale.
 
-the machine learning application is multi-pronged: scoring generated image adherence to target image, assessing and organizing and finding standardized cached generated image against target image, denoising and upscaling.
+the machine learning application is multi-pronged: 
+
+-scoring generated image adherence to target image
+-assessing and organizing and finding standardized cached generated image against target image
+-denoising
+-upscaling.
 
 processing currently is designed for "monkeys on a typewriter" processing
 but if one os to record treaded territory as they process brute force with machine assessing bitmap characteristics
