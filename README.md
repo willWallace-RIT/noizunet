@@ -31,6 +31,12 @@ noiunet is utilizing noizu compression
 https://github.com/willWallace-RIT/noizu_compression
 🌀 Noizu Compression — Client Loader & Cache System
 
+this is the poc for ranking infrastructure of commonly generated chunks
+https://github.com/willWallace-RIT/noizunet_ranker
+
+POC for infrastructure creating a coin out of calculation of mining closest image finding, generation, and organization of image chunks
+https://github.com/willWallace-RIT/noizunet_imageproc_client
+
 NoizuNet introduces a chunk-based image reconstruction pipeline where images are transmitted as references to known visual primitives instead of raw pixels.
 
 This module implements the client-side engine responsible for:
