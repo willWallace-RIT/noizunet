@@ -2,6 +2,9 @@
 noizunet project
 ---
 
+[pitchdeck](https://github.com/willWallace-RIT/noizunet_pitchdeck)
+
+
 (boilerplate by chatgpt)
 ((like all iterative concepts on github, public does not mean complete))
 
